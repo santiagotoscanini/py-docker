@@ -4,6 +4,7 @@
 
 We have [this utility](https://github.com/codecrafters-io/docker-explorer/blob/master/main.go) that exposes
 `echo`, `echo_stderr`, `mypid`, `ls`, `touch` and `exit`. So we don't run the native ones.
+This way we don't have to copy all the executables for `chroot`.
 
 ### Docker container
 
