@@ -1,26 +1,38 @@
 import ctypes
+import logging
 import os
-import shutil
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
+
+from app.docker_image import pull_image
+
+
+def is_debug():
+    codecrafters_yml = (Path(__file__).parent.parent / "codecrafters.yml").read_text()
+    return "debug: true" in codecrafters_yml
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG if is_debug() else logging.INFO)
+
+    image_tag = "latest"
+    image = sys.argv[2].split(":")
+    if len(image) == 2:
+        image_tag = image[1]
+
     command = sys.argv[3]
     args = sys.argv[4:]
 
     with tempfile.TemporaryDirectory() as tmp_dir:
-        command_dir = os.path.dirname(command)
-        tmp_command_dir = tmp_dir + command_dir
+        pull_image(image[0], image_tag, tmp_dir)
 
         # Currently, On macOS with Apple Silicon, mounting /proc file system inside chrooted directory is mandatory.
         # Otherwise, running /usr/local/bin/docker-explorer binary will result in following error:
         # rosetta error: Unable to open /proc/self/exe: 2
 
-        # Copy the binaries and chroot into the temporary directory
-        os.makedirs(tmp_command_dir, exist_ok=True)
-        shutil.copy(command, tmp_command_dir)
+        # TODO: check pivot_root
         os.chroot(tmp_dir)
 
         # Loads the C standard library (libc) into Python. The None argument is to load it in the current process.
