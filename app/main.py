@@ -4,18 +4,14 @@ import os
 import subprocess
 import sys
 import tempfile
-from pathlib import Path
 
 from app.docker_image import pull_image
 
-
-def is_debug():
-    codecrafters_yml = (Path(__file__).parent.parent / "codecrafters.yml").read_text()
-    return "debug: true" in codecrafters_yml
+is_debug = False
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG if is_debug() else logging.INFO)
+    logging.basicConfig(level=logging.DEBUG if is_debug else logging.INFO)
 
     image_tag = "latest"
     image = sys.argv[2].split(":")

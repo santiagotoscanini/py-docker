@@ -9,7 +9,7 @@ We're using linux-specific syscalls (chroot, namespaces, etc). so we need to run
 In order to do it easily, we need to add this shell alias.
 
 ```sh
-alias mydocker='docker build -t mydocker . && docker run --cap-add="SYS_ADMIN" mydocker'
+alias ddocker='docker build -t mydocker . && docker run --cap-add="SYS_ADMIN" mydocker'
 ```
 It's used to build and run the Dockerfile with our code.
 
@@ -19,7 +19,7 @@ It's used to build and run the Dockerfile with our code.
 We can now execute it like:
 
 ```sh
-mydocker run ubuntu:latest echo hey
+ddocker run ubuntu:latest echo hey
 ```
 
 This tries to emulate the following command:
